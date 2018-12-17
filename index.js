@@ -3,30 +3,13 @@ var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient
 var app = express();
 var ObjectID = require('mongodb').ObjectID
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 var db;
-var artArr = [
-    {
-        id:1,
-        name:"arnold"
-    },
-    {
-        id:2,
-        name:"vandam"
-    },
-    {
-        id:3,
-        name: "jorbik"
-    }
-]
-
 app.get('/', (req, res)=>{//skzbnakan ejum grum e "hello"
     res.send('Hello');
 })
 app.get('/artists', (req, res)=>{//"/artist" ejum grum e artArr json@
-//res.send(artArr);
 db.collection('artists').find().toArray((err, docs)=>{
     if(err){
         console.log(err);
@@ -36,7 +19,6 @@ db.collection('artists').find().toArray((err, docs)=>{
     res.send(docs)
 })
 })
-
 app.get('/artists/:id', (req,res)=>{//"artists/id" hmp id ov grum e hmp ejum
 db.collection('artists').findOne({_id: ObjectID(req.params.id)}, (err, doc)=>{
     if(err){
@@ -45,9 +27,7 @@ db.collection('artists').findOne({_id: ObjectID(req.params.id)}, (err, doc)=>{
     }
     res.send(doc.name)
 })
-
 })
-
 app.post('/artists', (req, res)=>{//req bodyn vercnum e sarqum object u grum /artistsum
    var artist = {
        name: req.body.name
@@ -56,18 +36,14 @@ app.post('/artists', (req, res)=>{//req bodyn vercnum e sarqum object u grum /ar
     console.log(req.body);
    db.collection('artists').insert(artist, function(err, result){
        if(err){
-          // return
             console.log(err);
           return  res.sendStatus(500);
        }
        res.send(artist);
    })
-    //res.send(artist)
 })
 
 app.put('/artists/:id', (req, res)=>{ //poxum e hmp id i tak exac name mer req ov
-// console.log(req.body.name);
-// console.log((req.params.id) )
     db.collection('artists').updateOne(
       { _id: ObjectID(req.params.id) },
      {$set: {name: req.body.name}},
@@ -90,16 +66,8 @@ app.delete('/artists/:id', (req, res)=>{
           }
           res.sendStatus(200);
       }
-
   )
-
-
-
 })
-
-/* app.listen(5001, ()=>{
-    console.log("Api app started sucsesfully")
-}) */
 MongoClient.connect('mongodb://localhost:27017', (err, database)=>{
     if(err) {
        return console.log(err);
